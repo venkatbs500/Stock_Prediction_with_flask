@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Bar</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="search-container">
+            <input type="text" class="search-bar" id="searchInput" placeholder="Enter symbol...">
+            <button class="search-button" onclick="search()" id="searchButton">Search</button>
+        </div>
+
+        <div id="searchResults">
+            <!-- Search results will be displayed here -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function search() {
+            var input, symbol;
+            input = document.getElementById('searchInput');
+            symbol = input.value;
+
+            // Disable the button
+            document.getElementById('searchButton').disabled = true;
+
+            // Make an AJAX request to the server using Axios
+            axios.get('http://localhost:5000/predict', {
+                params: {
+                    symbol: symbol
+                }, timeout: 10000,
+            })
+                .then(function (response) {
+                    console.log(response)
+                    // Enable the button
+                    document.getElementById('searchButton').disabled = false;
+
+                    // Display the result in the searchResults div
+                    document.getElementById("searchResults").innerHTML = "<div class='prediction'>" + response.data + "</div>";
+                })
+                .catch(function (error) {
+                    // Enable the button
+                    document.getElementById('searchButton').disabled = false;
+
+                    // Handle error
+                    console.error('Error occurred:', error);
+                });
+        }
+    </script>
+
+</body>
+
+</html>
